@@ -1,0 +1,45 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Documents\\GitHub\\Luffy-Adventure\\OnePieceAdventure\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{3FFD8366-B2D1-4FA8-A0E7-BFF0F14148A2}|OnePieceAdventure\\OnePieceAdventure.pyproj|D:\\Documents\\GitHub\\Luffy-Adventure\\OnePieceAdventure\\OnePieceAdventure\\OnePieceAdventure.py||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{3FFD8366-B2D1-4FA8-A0E7-BFF0F14148A2}|OnePieceAdventure\\OnePieceAdventure.pyproj|solutionrelative:OnePieceAdventure\\OnePieceAdventure.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:3:0:{e8b06f52-6d01-11d2-aa7d-00c04f990343}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:2:0:{e8b06f52-6d01-11d2-aa7d-00c04f990343}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "OnePieceAdventure.py",
+              "DocumentMoniker": "D:\\Documents\\GitHub\\Luffy-Adventure\\OnePieceAdventure\\OnePieceAdventure\\OnePieceAdventure.py",
+              "RelativeDocumentMoniker": "OnePieceAdventure\\OnePieceAdventure.py",
+              "ToolTip": "D:\\Documents\\GitHub\\Luffy-Adventure\\OnePieceAdventure\\OnePieceAdventure\\OnePieceAdventure.py",
+              "RelativeToolTip": "OnePieceAdventure\\OnePieceAdventure.py",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
+              "WhenOpened": "2026-05-20T17:12:10.926Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
