@@ -1,7 +1,7 @@
 import pygame
 import sys
 from world import World
-from Character import Character  # الآن سيتعرف عليها بنجاح!
+from Character import Character # استدعاء الكلاس الجديد
 
 class Game:
     def __init__(self):
@@ -13,19 +13,15 @@ class Game:
 
     def load_level(self, level_name):
         self.world = World(level_name)
-        # تصليح الخطأ الإملائي في ملف الـ world من التيم لاستدعاء الـ obstacles
-        self.world.create_obstacles() 
-        
         self.map_surface = self.world.make_map()
         self.map_rect = self.map_surface.get_rect()
         self.camera_x = 0
         
-        # جلب نقاط البداية والنهاية من الخريطة
-        self.start_pos = self.world.get_objects().get('start', (100, 350))
-        self.goal_pos = self.world.get_objects().get('goal', (0, 0))
+        # جلب نقطة البداية من الخريطة
+        start_pos = self.world.get_objects().get('start', (100, 300))
         
-        # 🎯 إنشاء شخصية لوفي عند نقطة البداية المحددة في الخريطة!
-        self.player = Character(self.start_pos)
+        # إنشاء كائن لوفي في مكان البداية
+        self.luffy = Character(start_pos)
         
         pygame.display.set_caption("Luffy's Adventure")
         print(f"Loaded level: {level_name}")
@@ -33,34 +29,25 @@ class Game:
     def run(self):
         while self.running:
             self.handle_events()
-            self.screen.fill((0, 0, 0))
             
             keys = pygame.key.get_pressed()
             
-            # تحديث حركة لوفي بناءً على الأزرار المضغوطة
-            self.player.update(keys)
+            # تحديث لوفي (الحركة والفيزياء)
+            self.luffy.update(keys)
             
-            # جعل الكاميرا تتبع حركة اللاعب بشكل احترافي
-            self.camera_x = -self.player.x + 350
+            # جعل الكاميرا تتبع لوفي (اختياري)
+            self.camera_x = -(self.luffy.x - 300)
             
-            # حماية الكاميرا من الخروج عن حدود الخريطة
-            if self.camera_x > 0:
-                self.camera_x = 0
+            # حدود الكاميرا
+            if self.camera_x > 0: self.camera_x = 0
             if self.camera_x < self.screen.get_width() - self.map_rect.width:
                 self.camera_x = self.screen.get_width() - self.map_rect.width
+
+            # الرسم
+            self.screen.fill((0, 0, 0))
+            self.screen.blit(self.map_surface, (self.camera_x, 0)) # رسم الخريطة
+            self.luffy.draw(self.screen, self.camera_x) # رسم لوفي
             
-            # 1. رسم الخريطة أولاً
-            self.screen.blit(self.map_surface, (self.camera_x, 0))
-            
-            # 2. رسم لوفي فوق الخريطة مع إحداثيات الكاميرا المحدثة
-            self.player.draw(self.screen, self.camera_x)
-            
-            # 3. رسم مؤشر الكومبو إذا كان جاهزاً
-            if self.player.combo_ready:
-                font = pygame.font.SysFont(None, 30)
-                text = font.render("COMBO READY! Press V", True, (255, 69, 0))
-                self.screen.blit(text, (20, 20))
-                
             pygame.display.flip()
             self.clock.tick(60)
         pygame.quit()
