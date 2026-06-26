@@ -1,41 +1,52 @@
 import pygame
 import pytmx
+
 class World:
-    def __init__(self, filename):
-        self.tmx_data = pytmx.load_pygame(filename)
-        self.width = self.tmx_data.width * self.tmx_data.tilewidth
-        self.height = self.tmx_data.height * self.tmx_data.tileheight
-        self.obstacles =[]
-        self.dangres = []
-        self.create_obstacles
-    def create_obstacles(self):
+    def __init__(self, tmx_file):
+        self.tmx_data = pytmx.load_pygame(tmx_file)
+        self.tile_size = 32
+        self.width = self.tmx_data.width * self.tile_size
+        self.height = self.tmx_data.height * self.tile_size
+        
+        self.obstacles = [] 
+        self.dangers = []   
+        self.meats = []
+        self.create_objects()
+
+    def create_objects(self):
+        self.obstacles = []
+        self.dangers = []
+        self.meats = [] 
+        
         for layer in self.tmx_data.visible_layers:
             if isinstance(layer, pytmx.TiledTileLayer):
                 for x, y, gid in layer:
                     tile_props = self.tmx_data.get_tile_properties_by_gid(gid)
                     if tile_props:
-                        rect = pygame.Rect(x * self.tmx_data.tilewidth, y * self.tmx_data.tileheight, self.tmx_data.tilewidth, self.tmx_data.tileheight)
+                        rect = pygame.Rect(x * 32, y * 32, 32, 32)
                         if tile_props.get('solid'):
-
                             self.obstacles.append(rect)
-                        if tile_props.get('danger'):
-                            self.dangres.append(rect)
+                        elif tile_props.get('danger'):
+                            self.dangers.append(rect)
+                        elif tile_props.get('type') == 'meat':
+                            self.meats.append([rect, x, y, layer]) 
+
+    def get_objects(self):
+        return {obj.name: (obj.x, obj.y) for obj in self.tmx_data.objects if obj.name}
+
     def render(self, surface):
         for layer in self.tmx_data.visible_layers:
             if isinstance(layer, pytmx.TiledTileLayer):
-                for x, y, gid in layer:
-                    tile = self.tmx_data.get_tile_image_by_gid(gid)
-                    if tile:
-                        surface.blit(tile, (x * self.tmx_data.tilewidth, y * self.tmx_data.tileheight))
+                for x, y, image in layer.tiles():
+                    if image:
+                        surface.blit(image, (x * self.tile_size, y * self.tile_size))
+        
+        for obj in self.tmx_data.objects:
+            tile_image = self.tmx_data.get_tile_image_by_gid(obj.gid)
+            if tile_image:
+                surface.blit(tile_image, (obj.x, obj.y - obj.height))
+
     def make_map(self):
-        temp_surface = pygame.Surface((self.width, self.height))
+        temp_surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
         self.render(temp_surface)
         return temp_surface
-    def get_objects(self):
-        points = {}
-        for obj in self.tmx_data.objects:
-            if obj.name == 'start':
-                points['start'] = (obj.x, obj.y)
-            if obj.name == 'goal':
-                points['goal'] = (obj.x, obj.y)
-        return points
