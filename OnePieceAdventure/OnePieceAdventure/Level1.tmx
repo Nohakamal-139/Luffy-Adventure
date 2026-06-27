@@ -5,7 +5,14 @@
  <tileset firstgid="9" source="draw.tsx"/>
  <tileset firstgid="13" source="castle.tsx"/>
  <tileset firstgid="17" source="new castle.tsx"/>
- <tileset firstgid="20" source="meat.tsx"/>
+ <tileset firstgid="20" name="New Piskel (5)" tilewidth="32" tileheight="32" tilecount="1" columns="1">
+  <image source="New Piskel (5).png" width="32" height="32"/>
+  <tile id="0">
+   <properties>
+    <property name="type" value="meat"/>
+   </properties>
+  </tile>
+ </tileset>
  <layer id="2" name="background" width="100" height="20">
   <data encoding="csv">
 5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,

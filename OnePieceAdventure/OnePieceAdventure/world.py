@@ -7,44 +7,42 @@ class World:
         self.tile_size = 32
         self.width = self.tmx_data.width * self.tile_size
         self.height = self.tmx_data.height * self.tile_size
-        
-        self.obstacles = [] 
-        self.dangers = []   
-        self.meats = []
+        self.obstacles, self.dangers, self.meat_rects = [], [], []
         self.create_objects()
 
     def create_objects(self):
-        self.obstacles = []
-        self.dangers = []
-        self.meats = [] 
-        
-        for layer in self.tmx_data.visible_layers:
+        # تصفير القوائم
+        self.obstacles, self.dangers, self.meat_rects = [], [], []
+        for layer_index, layer in enumerate(self.tmx_data.visible_layers):
             if isinstance(layer, pytmx.TiledTileLayer):
                 for x, y, gid in layer:
-                    tile_props = self.tmx_data.get_tile_properties_by_gid(gid)
-                    if tile_props:
-                        rect = pygame.Rect(x * 32, y * 32, 32, 32)
-                        if tile_props.get('solid'):
-                            self.obstacles.append(rect)
-                        elif tile_props.get('danger'):
-                            self.dangers.append(rect)
-                        elif tile_props.get('type') == 'meat':
-                            self.meats.append([rect, x, y, layer]) 
+                    props = self.tmx_data.get_tile_properties_by_gid(gid)
+                    if props:
+                        rect = pygame.Rect(x*32, y*32, 32, 32)
+                        if props.get('solid'): self.obstacles.append(rect)
+                        elif props.get('danger'): self.dangers.append(rect)
+                        elif props.get('type') == 'meat': self.meat_rects.append(rect)
 
     def get_objects(self):
         return {obj.name: (obj.x, obj.y) for obj in self.tmx_data.objects if obj.name}
 
     def render(self, surface):
-        for layer in self.tmx_data.visible_layers:
+        for layer_index, layer in enumerate(self.tmx_data.visible_layers):
+            # رسم المربعات (مع التأكد من رسم كل الطبقات عشان الأرضية تظهر)
             if isinstance(layer, pytmx.TiledTileLayer):
                 for x, y, image in layer.tiles():
-                    if image:
-                        surface.blit(image, (x * self.tile_size, y * self.tile_size))
+                    props = self.tmx_data.get_tile_properties(x, y, layer_index)
+                    # أهم سطر: لو المربع "لحمة"، ما ترسموش هنا (إحنا هنرسمه في main عشان يختفي)
+                    if props and props.get('type') == 'meat': continue
+                    if image: surface.blit(image, (x * 32, y * 32))
+            # رسم الصور الكبيرة (الخلفية)
+            elif isinstance(layer, pytmx.TiledImageLayer):
+                if layer.image: surface.blit(layer.image, (int(layer.offsetx), int(layer.offsety)))
         
+        # رسم الأجسام (القلعة)
         for obj in self.tmx_data.objects:
-            tile_image = self.tmx_data.get_tile_image_by_gid(obj.gid)
-            if tile_image:
-                surface.blit(tile_image, (obj.x, obj.y - obj.height))
+            img = self.tmx_data.get_tile_image_by_gid(obj.gid)
+            if img: surface.blit(img, (obj.x, obj.y - obj.height))
 
     def make_map(self):
         temp_surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
