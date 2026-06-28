@@ -7,7 +7,6 @@ class Character:
         self.initial_start = start_pos
         self.x, self.y = start_pos
         
-        # تحميل الصور
         assets_dir = "assets"
         self.sheet_base = pygame.image.load(os.path.join(assets_dir, "luffy_base_sheet.png")).convert_alpha()
         self.sheet_skills = pygame.image.load(os.path.join(assets_dir, "luffy_skills_sheet.png")).convert_alpha()
@@ -19,16 +18,14 @@ class Character:
         self.jump_frames = [self.get_frame(self.sheet_base, 20, 510, 110, 160)]
         self.dodge_frames = [self.get_frame(self.sheet_skills, 35, 65, 110, 180)]
 
-        # الجاتلينج (Z)
         self.gatling_lvl1 = [self.get_frame(self.sheet_lvl2, 10, 260, 115, 170), self.get_frame(self.sheet_lvl2, 385, 260, 195, 170)]
-        # الكومبو الأسطوري (X)
+        
         self.boss_combo = [self.get_frame(self.sheet_combo, 750, 625, 245, 160), self.get_frame(self.sheet_combo, 480, 575, 230, 225)]
 
         self.reset()
         self.speed, self.gravity, self.jump_power = 8, 0.6, -14
         
-        # --- نظام الكومبو الجديد ---
-        self.gatling_usage = 0 # عداد استخدام الجاتلينج
+        self.gatling_usage = 0 
         self.combo_ready = False
 
     def get_frame(self, sheet, x, y, w, h):
@@ -46,7 +43,6 @@ class Character:
         self.combo_ready = False
 
     def update(self, keys, obstacles, dangers):
-        # زيادة الطاقة بالراحة
         if self.energy < 100: self.energy += 0.1
         
         new_state = "idle"
@@ -57,14 +53,12 @@ class Character:
             elif keys[pygame.K_LEFT]: self.x -= self.speed; new_state = "run"; self.facing_left = True
             if keys[pygame.K_UP] and self.on_ground: self.velocity_y = self.jump_power; self.on_ground = False
             
-            # زر Z (جاتلينج)
             if keys[pygame.K_z] and self.energy >= 15:
                 new_state = "gatling"
                 self.energy -= 10
                 self.gatling_usage += 1
                 if self.gatling_usage >= 3: self.combo_ready = True
             
-            # زر X (الكومبو الأسطوري - متاح بعد 3 جاتلينج)
             if keys[pygame.K_x] and self.combo_ready and self.energy >= 30:
                 new_state = "boss_combo"
                 self.energy -= 25
@@ -87,7 +81,7 @@ class Character:
                         self.velocity_y = 0
                         self.on_ground = True
                     if b in dangers:
-                        self.health -= 1 # تأثر لوفي بالـ Danger
+                        self.health -= 1 
                         if self.health <= 0: self.reset()
                     break
 

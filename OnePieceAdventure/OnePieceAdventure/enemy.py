@@ -73,28 +73,23 @@ class Marine:
             
             for b in self.bullets:
                 pygame.draw.rect(surface, (240, 210, 20), (int(b["rect"].x + camera_x), int(b["rect"].y), 12, 5))
-                ###########################################
 
 
-# --- كلاس المارين يفضل كما هو عندك دون تغيير ---
 
 
 class Crocodile:
     def __init__(self, x, y):
         self.x, self.y = x, y
         self.size = (150, 160)
-        # تأكدي من المسارات صح
         self.sheet3 = pygame.image.load("luffy/sheet3.jpg.png").convert_alpha()
         self.sheet4 = pygame.image.load("luffy/sheet4.jpg.png").convert_alpha()
         
-        # وقوف بالإعصار (Sheet 3) - إحداثيات دقيقة
         self.idle_frames = []
         for i in range(4):
             sub = self.sheet3.subsurface((i * 125, 0, 125, 145)).copy()
             sub.set_colorkey(sub.get_at((0,0)))
             self.idle_frames.append(pygame.transform.scale(sub, self.size))
             
-        # الهجوم (Sheet 4 - الصف الأول) - إحداثيات دقيقة
         self.attack_frames = []
         for i in range(4):
             sub = self.sheet4.subsurface((i * 130, 0, 130, 135)).copy()
@@ -125,7 +120,6 @@ class Crocodile:
         img = self.image
         if not self.facing_left: img = pygame.transform.flip(img, True, False)
         
-        # تصحيح الـ T لـ y (هنا كان الإيرور)
         render_pos = (int(self.x + camera_x), int(self.y))
         
         if self.flash_timer > 0:

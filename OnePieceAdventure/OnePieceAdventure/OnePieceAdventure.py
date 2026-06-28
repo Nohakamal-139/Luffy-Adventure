@@ -13,7 +13,6 @@ class Game:
         pygame.display.set_caption("One Piece Adventure")
         self.font_sub = pygame.font.SysFont("Arial", 20, bold=True)
         
-        # --- تحميل الصور ---
         self.logo = pygame.image.load("one_piece_logo.jpeg").convert()
         self.logo = pygame.transform.scale(self.logo, (self.WIDTH, self.HEIGHT))
         self.tbc_img = pygame.image.load("to_be_continued.jpeg").convert()
@@ -101,13 +100,11 @@ class Game:
         keys = pygame.key.get_pressed()
         self.luffy.update(keys, self.world.obstacles, self.world.dangers)
         
-        # --- السحر: حدود الشاشة لمنع لوفي من الخروج ---
         if self.luffy.x < 0: self.luffy.x = 0
         if self.luffy.x > self.world.width - 64: self.luffy.x = self.world.width - 64
         
         l_rect = pygame.Rect(int(self.luffy.x), int(self.luffy.y), 64, 64)
 
-        # تحديث الأعداء
         for e in self.enemies[:]:
             e.update(self.luffy.x, self.luffy.y, self.world.obstacles, self.world.dangers)
             if e.health <= 0: self.enemies.remove(e); continue
@@ -117,15 +114,12 @@ class Game:
                 atk_rect = pygame.Rect(int(self.luffy.x - 50), int(self.luffy.y), 200, 100)
                 if atk_rect.colliderect(pygame.Rect(e.x, e.y, 64, 64)): e.health -= 10; e.flash_timer = 5
 
-        # تحديث الزعيم (البوس)
         if self.boss:
             self.boss.update(self.luffy.x, self.luffy.y)
             boss_hitbox = pygame.Rect(int(self.boss.x), int(self.boss.y), 120, 130)
             if l_rect.colliderect(boss_hitbox): self.luffy.health -= 0.5
             
-            # لوفي يضرب البوس
             if keys[pygame.K_z] or keys[pygame.K_x]:
-                # مساحة هجوم لوفي
                 attack_area = pygame.Rect(int(self.luffy.x - 80), int(self.luffy.y), 250, 120)
                 if attack_area.colliderect(boss_hitbox):
                     self.boss.health -= 2
@@ -133,7 +127,6 @@ class Game:
             
             if self.boss.health <= 0: self.GAME_STATE = "WIN"
 
-        # اللحمة والانتقال
         for m in self.meats[:]:
             if l_rect.colliderect(m): self.luffy.health = min(100, self.luffy.health+20); self.meats.remove(m)
         if self.goal_pos and l_rect.colliderect(pygame.Rect(self.goal_pos[0], self.goal_pos[1], 64, 64)):
@@ -152,12 +145,11 @@ class Game:
         self.draw_gui()
 
     def draw_gui(self):
-        # لوفي
+        
         self.screen.blit(self.health_fill, (20, 20), (0, 0, int(self.luffy.health * 2), 20))
         self.screen.blit(self.hud_border, (20, 20))
         self.screen.blit(self.energy_fill, (20, 50), (0, 0, int(self.luffy.energy * 2), 20))
         self.screen.blit(self.hud_border, (20, 50))
-        # البوس
         if self.is_boss_room and self.boss:
             bw = int(200 * (self.boss.health / 500))
             if bw > 0: self.screen.blit(self.boss_health_fill, (550, 20), (0, 0, bw, 20))
